@@ -59,7 +59,7 @@ Minecraft Server @ port 25565
 ## Commands to Run (If Running Manually)
 Start by cloning the repo:
 ```git
-git clone https://github.com/LeefiusBeefy/CS312CP2.git
+git clone https://github.com/LeefiusBeefy/CS312-mc-server.git
 cd CS312CP2
 ```
 Update `KEY_NAME` in `deploy.sh` to your Key Pair name.
@@ -71,7 +71,7 @@ Then run `deploy.sh` using
 ## 3. Deploy via GitHub Actions (CI/CD) (Automated Run)
 Start by cloning the repo:
 ```git
-git clone https://github.com/LeefiusBeefy/CS312CP2.git
+git clone https://github.com/LeefiusBeefy/CS312-mc-server.git
 cd CS312CP2
 ```
 On push to `main`, the workflow will:
