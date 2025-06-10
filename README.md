@@ -54,6 +54,7 @@ docker-compose up
                 ↓
 Minecraft Server @ port 25565
 ```
+
 ---
 
 ## Commands to Run (If Running Manually)
