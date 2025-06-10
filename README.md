@@ -60,7 +60,7 @@ Minecraft Server @ port 25565
 Start by cloning the repo:
 ```git
 git clone https://github.com/LeefiusBeefy/CS312-mc-server.git
-cd CS312CP2
+cd CS312-mc-server
 ```
 Update `KEY_NAME` in `deploy.sh` to your Key Pair name.
 
@@ -72,7 +72,7 @@ Then run `deploy.sh` using
 Start by cloning the repo:
 ```git
 git clone https://github.com/LeefiusBeefy/CS312-mc-server.git
-cd CS312CP2
+cd CS312-mc-server
 ```
 On push to `main`, the workflow will:
 - Run Terraform to provision EC2
