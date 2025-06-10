@@ -1,0 +1,56 @@
+name: Deploy Minecraft Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Provision & Configure Minecraft Server
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      TF_VAR_key_pair_name: ${{ secrets.KEY_PAIR_NAME }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Initialize Terraform
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Apply Terraform (auto-approve)
+        working-directory: ./terraform
+        run: terraform apply -auto-approve
+
+      - name: Extract public IP
+        working-directory: ./terraform
+        id: get_ip
+        run: echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> "$GITHUB_ENV"
+
+      - name: Install Ansible
+        run: sudo apt update && sudo apt install -y ansible
+
+      - name: Add private SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Write dynamic inventory
+        run: |
+          echo "[minecraft]" > ansible/inventory.ini
+          echo "$INSTANCE_IP ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'" >> ansible/inventory.ini
+
+      - name: Run Ansible playbook
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
